@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/exam_system_new?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+  data:
+    redis:
+      host: 192.168.200.2
+      port: 6379
+      # auth: root
+      database: 10
+
+# 日志配置
+logging:
+  # 日志级别配置
+  level:
+    # 全局日志级别
+    root: info
+  file:
+    # 相对路径
+    path: /usr/local/exam-log
+
+cors:
+  allow-origins:
+    - http://192.168.200.3	# 生产环境通过ip

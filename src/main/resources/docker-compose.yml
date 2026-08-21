@@ -1,0 +1,61 @@
+name: iot-app
+
+services:
+  emqx:
+    image: emqx/emqx-enterprise:6.0.1
+    container_name: emqx
+    hostname: node1.emqx.com
+    restart: unless-stopped
+    ports:
+      - "1883:1883"    # MQTT TCP 端口
+      - "8083:8083"    # MQTT over WebSocket 端口
+      - "8084:8084"    # MQTT over SSL 端口
+      - "8883:8883"    # MQTT over TCP/TLS 端口
+      - "18083:18083"  # Dashboard 管理界面端口
+    environment:
+      - EMQX_NODE_NAME=emqx@node1.emqx.com  # 默认账号：admin，密码: public
+    volumes:
+      - emqx-data:/opt/emqx/data
+      - emqx-log:/opt/emqx/log
+    networks:
+      - iot-net
+  minio:
+    container_name: minio
+    image: registry.cn-shenzhen.aliyuncs.com/hxlk8s/minio:RELEASE.2023-03-20T20-16-18Z
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=admin123456
+    volumes:
+      - minio-data:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      - iot-net
+  redis:
+    container_name: redis
+    image: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - redis-config:/usr/local/etc/redis
+    networks:
+      - iot-net
+
+
+volumes:
+  emqx-data:
+  emqx-log:
+  minio-data:
+  redis-data:
+  redis-config:
+
+networks:
+  iot-net:
+    name: iot-net

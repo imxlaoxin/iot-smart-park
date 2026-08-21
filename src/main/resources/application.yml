@@ -1,0 +1,76 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: iot-smart-park
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 100MB
+      # 总上传文件大小
+      max-request-size: 200MB
+
+# 日志配置
+logging:
+  # 日志归档与切割(默认策略：7天删除，每个文件10MB)
+  # 日志格式
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{60} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{60} - %msg%n"
+
+mybatis-plus:
+  type-aliases-package: com.imxiaoxin.iot.model.entity
+  configuration:
+    lazy-loading-enabled: true  # 开启延迟加载
+    aggressive-lazy-loading: false  # 取消积极延迟加载
+    auto-mapping-behavior: full # 开启resultMap嵌套自动映射
+
+# Knife4j参数对象扁平化处理
+knife4j:
+  enable: true # 是否开启Knife4j增强模式（开启就是使得setting部分生效）
+  setting:
+    enable-footer: false # 底部的Apache声明关闭（不好看）
+    swagger-model-name: "模型实体"  # Swagger Models改名为模型实体
+
+# Knife4j参数对象扁平化处理
+springdoc:
+  default-flat-param-object: true
+
+minio:
+  endpoint: http://10.46.100.211:9000
+  access-key: admin
+  secret-key: admin123456
+  bucket-name: iot-smart-park
+
+mqtt:
+  username: admin
+  password: admin123456
+  url: tcp://10.46.100.211:1883
+#  subClientId: sub_client_id_123
+  pubClientId: pub_client_id_123
+  # 发布的主题（向设备或其他系统发送消息）
+  pub-topics:
+    biz-detect: biz_detect    # 常规业务识别结果
+    exp-detect: exp_detect    # 紧急告警识别结果
+    parking-status: /park/spot/status # 停车位状态更新
+    exit-bill-display: /park/billing/display  # 出口收费显示
+    pole-action: /park/pole/action  # 杆机动作
+    charger-action: /park/charger/action  # 充电桩动作
+    exp-env-advice: exp_env_advice  # 异常环境ai分析建议
+
+#langchain4j测试模型
+langchain4j:
+  ollama:
+    chat-model:
+      base-url: http://localhost:11434
+      model-name: deepseek-r1:1.5b
+#      log-requests: true
+#      log-responses: true
+#阿里百炼平台
+  community:
+    dashscope:
+      chat-model:
+        api-key: ${QIANWEN_APIKEY}
+        model-name: qwen-max
